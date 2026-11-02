@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grammar Cafeteria: The Ultimate Food Fight</title>
+<style>
+:root{--red:#c92336;--deep:#8f1425;--cream:#fff9f5;--pink:#ffe3e6;--ink:#35252a;--gold:#ffd166;--green:#237a4b}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,#fff 0%,#fff4f5 55%,#ffe3e6 100%);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--red);color:white;padding:22px 18px;text-align:center;border-bottom:7px solid #fff}
+h1{margin:0;font-size:clamp(1.6rem,4vw,2.7rem);letter-spacing:.02em;text-shadow:2px 2px 0 var(--deep)}
+.subtitle{margin:7px 0 0;font-weight:650}
+.cat{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;width:72px;height:62px;margin:0 10px 0 0;position:relative;font-size:40px;filter:drop-shadow(1px 2px 0 #7c1221)}
+.cat span{position:absolute;top:-5px;right:-2px;font-size:15px;background:white;color:var(--red);border-radius:50%;padding:4px}
+main{max-width:1100px;margin:22px auto;padding:0 16px 36px}
+.topbar{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.panel{background:white;border:2px solid #f2b9c0;border-radius:16px;padding:14px 16px;box-shadow:0 4px 0 #f5d5d9}
+.panel h2{font-size:1rem;color:var(--deep);margin:0 0 7px}
+.scoreline{display:flex;justify-content:space-between;gap:10px;font-weight:800;font-size:1.25rem}
+progress{width:100%;height:17px;accent-color:var(--red);margin-top:8px}
+.tray{display:flex;flex-wrap:wrap;gap:5px;min-height:32px;font-size:25px;margin-top:8px}
+.note{font-size:.85rem;color:#72575e;margin-top:4px}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.category{background:var(--deep);color:white;text-align:center;border-radius:12px;padding:14px 7px;font-weight:800;display:flex;align-items:center;justify-content:center;min-height:82px;border:2px solid white;box-shadow:0 3px 0 #e6a5ae}
+.tile{border:2px solid #efb1ba;border-radius:12px;background:white;color:var(--red);font-size:clamp(1.35rem,3vw,2rem);font-weight:900;min-height:82px;cursor:pointer;box-shadow:0 3px 0 #f4d0d4;transition:transform .12s,background .12s}
+.tile:hover:not(:disabled){transform:translateY(-2px);background:#fff1f3}
+.tile:disabled{cursor:default;color:#a8a0a2;background:#f3eeee;border-color:#e4dfe0;box-shadow:none}
+.tile.done:disabled{font-size:1.4rem}
+.controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+button{font:inherit}
+.action{border:0;border-radius:11px;padding:11px 16px;background:var(--red);color:white;font-weight:800;cursor:pointer;box-shadow:0 3px 0 var(--deep)}
+.action:hover{filter:brightness(1.06)}
+.action.secondary{background:#5e4b50;box-shadow:0 3px 0 #30252a}
+.action:disabled{opacity:.45;cursor:default}
+.modal{display:none;position:fixed;inset:0;background:#30151dcc;z-index:10;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.dialog{background:var(--cream);width:min(720px,100%);border:5px solid white;border-radius:22px;padding:clamp(18px,4vw,30px);box-shadow:0 12px 40px #210b0c66;max-height:92vh;overflow:auto}
+.qhead{display:flex;justify-content:space-between;gap:12px;align-items:center;color:var(--deep);font-weight:900}
+.points{background:var(--red);color:white;border-radius:20px;padding:6px 13px;white-space:nowrap}
+.question{font-size:clamp(1.25rem,3vw,1.8rem);font-weight:800;line-height:1.35;margin:22px 0}
+.prompt{background:#fff;border:2px dashed #e8a2ad;border-radius:12px;padding:14px;margin:12px 0;font-size:1.05rem}
+.answer{display:none;background:#e9f6ee;border:2px solid #9bc9aa;border-radius:12px;padding:14px;margin:12px 0}
+.answer.show{display:block}
+.answer strong{color:#155d34}
+.feedback{font-weight:800;min-height:24px;margin:12px 0}
+.foodlabel{font-size:.95rem;color:#684e54}
+.celebration{display:none;text-align:center;padding:22px 0}
+.celebration.show{display:block}
+.celebration h2{color:var(--red);font-size:clamp(1.8rem,5vw,3rem);margin:4px}
+.celebration p{font-size:1.1rem}
+.fight{position:relative;overflow:hidden;min-height:130px;background:#fff0f2;border-radius:15px;border:2px dashed #e89aa5;font-size:2rem}
+.flying{position:absolute;animation:fly 2.8s ease-in infinite;left:var(--x);top:10px}
+@keyframes fly{0%{transform:translate(-20px,110px) rotate(0deg);opacity:0}15%{opacity:1}100%{transform:translate(150px,-130px) rotate(500deg);opacity:0}}
+footer{text-align:center;color:#8a6970;font-size:.82rem;margin-top:22px}
+@media(max-width:650px){.topbar{grid-template-columns:1fr}.board{gap:6px}.category{font-size:.78rem;min-height:72px;padding:8px 4px}.tile{min-height:70px}.cat{width:52px;font-size:30px}}
+</style>
+</head>
+<body>
+<header>
+  <div><span class="cat" aria-label="cat mascot">🐱<span>★</span></span><span style="display:inline-block;vertical-align:middle">GRAMMAR CAFETERIA</span></div>
+  <h1>The Ultimate Food Fight!</h1>
+  <p class="subtitle">Team up, review your grammar, and earn cafeteria food.</p>
+</header>
+<main>
+  <section class="topbar">
+    <div class="panel">
+      <h2>🍽️ Team Food Points</h2>
+      <div class="scoreline"><span id="score">0</span><span>Goal: 1,500</span></div>
+      <progress id="progress" value="0" max="1500"></progress>
+      <div class="note" id="goalNote">Earn 1,500 points to unlock the food fight!</div>
+    </div>
+    <div class="panel">
+      <h2>🥡 Your Food Tray</h2>
+      <div class="tray" id="tray" aria-label="Collected food">Your tray is empty…</div>
+      <div class="note">Each correct answer adds food to your team’s tray.</div>
+    </div>
+  </section>
+
+  <div class="board" id="board" aria-label="Jeopardy game board"></div>
+  <div class="controls">
+    <button class="action secondary" id="reset">Restart Game</button>
+    <button class="action" id="fight" disabled>Start the Food Fight! 🔒</button>
+  </div>
+  <footer>Red & white school spirit • Grammar first, food fight second!</footer>
+</main>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="qTitle">
+  <div class="dialog">
+    <div class="qhead"><span id="qTitle">Category</span><span class="points" id="qPoints">100 points</span></div>
+    <div class="question" id="qText"></div>
+    <div class="prompt" id="qPrompt"></div>
+    <div class="answer" id="qAnswer"></div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+    <div class="controls" id="questionControls">
+      <button class="action" id="reveal">Reveal Answer</button>
+      <button class="action" id="correct" disabled>Correct! Earn Food</button>
+      <button class="action secondary" id="incorrect">Not Quite</button>
+      <button class="action secondary" id="close">Back to Board</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="finalModal" role="dialog" aria-modal="true" aria-labelledby="finalTitle">
+  <div class="dialog">
+    <div class="celebration show">
+      <div style="font-size:3rem">🐱🍝🍕🥔</div>
+      <h2 id="finalTitle">You unlocked the Food Fight!</h2>
+      <p>Your team reached the cafeteria goal. Grammar skills: strong. Food fight skills: legendary.</p>
+      <div class="fight" id="fightScene" aria-label="Animated cartoon food fight"></div>
+      <div class="controls">
+        <button class="action" id="throwAgain">Throw More Food! 🍕</button>
+        <button class="action secondary" id="finalClose">Back to the Board</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const categories = [
+ {name:"Quantifiers",questions:[
+  {q:"Choose the correct quantifier: “There aren’t ___ chairs for everyone.”",prompt:"many / much",a:"many. “Chairs” is a countable plural noun.",food:"🍇",label:"Grapes"},
+  {q:"Correct the sentence: “I have a little friends in this city.”",prompt:"Say the corrected sentence and explain the quantifier.",a:"“I have a few friends in this city.” Use “few” with countable plural nouns; “little” is used with uncountable nouns.",food:"🍕",label:"Pizza"},
+  {q:"A student says: “There is too many information online.” Correct it and explain both errors.",prompt:"Think about subject-verb agreement and countability.",a:"“There is too much information online.” “Information” is uncountable, so use “much,” not “many.” The verb is “is,” not “are,” because the noun is uncountable.",food:"🍝",label:"Spaghetti"}
+ ]},
+ {name:"Dependent Prepositions",questions:[
+  {q:"Complete the phrase: “She’s interested ___ learning Japanese.”",prompt:"Choose the dependent preposition.",a:"“Interested in.” The adjective “interested” is followed by “in.”",food:"🍌",label:"Banana"},
+  {q:"Correct the sentence: “We discussed about the new policy.”",prompt:"What should the teacher elicit from the learner?",a:"“We discussed the new policy.” The verb “discuss” takes a direct object and does not need “about.”",food:"🍔",label:"Burger"},
+  {q:"A learner says: “My success depends of how much I practice.” Correct it and explain the phrase.",prompt:"Give the corrected sentence and identify the verb + preposition pattern.",a:"“My success depends on how much I practice.” The verb phrase is “depend on,” not “depend of.”",food:"🥔",label:"Mashed potatoes"}
+ ]},
+ {name:"Articles",questions:[
+  {q:"Choose the correct article: “He ate ___ apple before class.”",prompt:"a / an / the / no article",a:"“An apple.” Use “an” before a vowel sound.",food:"🥔",label:"Potato chips"},
+  {q:"Correct the sentence: “The life is sometimes difficult.”",prompt:"Is the speaker talking about life in general or a specific life?",a:"“Life is sometimes difficult.” No article is used with “life” when speaking generally.",food:"🍗",label:"Chicken nuggets"},
+  {q:"Explain the article difference: “She went to school” vs. “She went to the school.”",prompt:"What changes in meaning?",a:"“Went to school” usually means she attended school as a student. “Went to the school” means she went to a particular school building or location. The article signals a specific place.",food:"🍎",label:"Applesauce"}
+ ]},
+ {name:"Verb Tenses & Time Expressions",questions:[
+  {q:"Choose the correct form: “I ___ my keys. Have you seen them?”",prompt:"lost / have lost",a:"“I have lost my keys.” The present perfect connects a past event to the present result.",food:"🍇",label:"Grapes"},
+  {q:"Correct the sentence: “I live here since 2020.”",prompt:"Give the corrected sentence and explain the tense.",a:"“I have lived here since 2020.” Use the present perfect for a situation that began in the past and continues now. “Since” marks the starting point.",food:"🍕",label:"Pizza"},
+  {q:"Choose and explain: “When I arrived, the movie ___.”",prompt:"(already / start) — Had already started, or already started?",a:"“When I arrived, the movie had already started.” The past perfect shows the movie started before another past event. “Already” emphasizes that it happened earlier than expected.",food:"🍝",label:"Spaghetti"}
+ ]}
+];
+const values=[100,200,300];
+const foodByValue={100:["🍇","🍌","🥔"],200:["🍕","🍔","🍗"],300:["🍝","🥔","🍎"]};
+let score=0, earned=[], used=new Set(), active=null, revealed=false;
+const board=document.getElementById("board"), modal=document.getElementById("modal");
+function buildBoard(){
+ board.innerHTML="";
+ categories.forEach((cat,ci)=>{
+  const head=document.createElement("div");head.className="category";head.textContent=cat.name;board.appendChild(head);
+ });
+ values.forEach((value,ri)=>{
+  categories.forEach((cat,ci)=>{
+   const key=`${ci}-${ri}`,btn=document.createElement("button");
+   btn.className="tile";btn.textContent=value;btn.setAttribute("aria-label",`${cat.name}, ${value} points`);
+   if(used.has(key)){btn.disabled=true;btn.classList.add("done");btn.textContent="✓"}
+   else btn.addEventListener("click",()=>openQuestion(ci,ri,key));
+   board.appendChild(btn);
+  });
+ });
+}
+function updateScore(){
+ document.getElementById("score").textContent=score.toLocaleString();
+ document.getElementById("progress").value=Math.min(score,1500);
+ document.getElementById("goalNote").textContent=score>=1500?"Goal reached! The food fight is unlocked!":"Earn "+(1500-score).toLocaleString()+" more points to unlock the food fight!";
+ document.getElementById("tray").textContent=earned.length?earned.join(" "):"Your tray is empty…";
+ const fight=document.getElementById("fight");fight.disabled=score<1500;fight.textContent=score>=1500?"Start the Food Fight! 🍕":"Start the Food Fight! 🔒";
+}
+function openQuestion(ci,ri,key){
+ active={ci,ri,key,value:values[ri]};revealed=false;
+ const item=categories[ci].questions[ri];
+ document.getElementById("qTitle").textContent=categories[ci].name;
+ document.getElementById("qPoints").textContent=values[ri]+" points";
+ document.getElementById("qText").textContent=item.q;
+ document.getElementById("qPrompt").textContent=item.prompt;
+ const ans=document.getElementById("qAnswer");ans.textContent=item.a;ans.classList.remove("show");
+ document.getElementById("feedback").textContent="";
+ document.getElementById("reveal").disabled=false;
+ document.getElementById("correct").disabled=true;
+ document.getElementById("incorrect").disabled=false;
+ modal.classList.add("open");
+}
+document.getElementById("reveal").onclick=()=>{
+ document.getElementById("qAnswer").classList.add("show");revealed=true;
+ document.getElementById("reveal").disabled=true;document.getElementById("correct").disabled=false;
+ document.getElementById("feedback").textContent="Discuss the answer with your team. Did you get it right?";
+};
+document.getElementById("correct").onclick=()=>{
+ if(!active||used.has(active.key))return;
+ used.add(active.key);score+=active.value;
+ const food=foodByValue[active.value][Math.floor(Math.random()*foodByValue[active.value].length)];
+ earned.push(food);closeQuestion();buildBoard();updateScore();
+ if(score>=1500)document.getElementById("fight").focus();
+};
+document.getElementById("incorrect").onclick=()=>{
+ if(!active)return;
+ used.add(active.key);
+ document.getElementById("feedback").textContent="This question is now used. Review the answer, then keep going!";
+ document.getElementById("incorrect").disabled=true;
+ document.getElementById("correct").disabled=true;
+ document.getElementById("reveal").disabled=true;
+ document.getElementById("qAnswer").classList.add("show");
+};
+document.getElementById("close").onclick=()=>{if(active && used.has(active.key)){closeQuestion();buildBoard()}else closeQuestion()};
+function closeQuestion(){modal.classList.remove("open");active=null}
+function startFight(){
+ if(score<1500)return;
+ const fm=document.getElementById("finalModal");fm.classList.add("open");throwFood();
+}
+function throwFood(){
+ const scene=document.getElementById("fightScene");scene.innerHTML="";
+ const foods=["🍝","🍕","🥔","🍎","🍇","🍔","🍗","🥫","🥧","🍌"];
+ for(let i=0;i<24;i++){const span=document.createElement("span");span.className="flying";span.textContent=foods[i%foods.length];span.style.setProperty("--x",(Math.random()*85)+"%");span.style.animationDelay=(Math.random()*1.8)+"s";span.style.animationDuration=(1.8+Math.random()*2)+"s";span.style.fontSize=(1.3+Math.random()*1.4)+"rem";scene.appendChild(span)}
+}
+document.getElementById("fight").onclick=startFight;
+document.getElementById("throwAgain").onclick=throwFood;
+document.getElementById("finalClose").onclick=()=>document.getElementById("finalModal").classList.remove("open");
+document.getElementById("reset").onclick=()=>{
+ if(!confirm("Restart the game? Your score and food tray will be cleared."))return;
+ score=0;earned=[];used.clear();buildBoard();updateScore();document.getElementById("finalModal").classList.remove("open");
+};
+buildBoard();updateScore();
+</script>
+</body>
+</html>
